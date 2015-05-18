@@ -1,4 +1,7 @@
-//Tries to retrain students so that it can start spin offs
+// Knowledge Island AI - mrRetrain.c
+// ***Tries to retrain students so that it can start spin offs
+// By Louis Cheung & Stephanie Chua
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -9,14 +12,16 @@
 
 action decideAction (Game g) {
         int me = getWhoseTurn (g);
-        //resources
+        
+        //Number of students resources
         int engineer = getStudents (g, me, STUDENT_BPS);
         int scientist = getStudents (g, me STUDENT_BQN);
         int jobOwner = getStudents (g, me, STUDENT_MJ);
         int tvStar = getStudents (g, me, STUDENT_MTV);
         int moneyMaker = getStudents (g, me, STUDENT_MMONEY);
-        //retraining conditions 
-        //last argument of getExchangeRate is useless
+        
+        //Exchange rate - Retraining Conditions
+        //Last argument unnecessary as only disciplineFrom is important
         int costSci = getExchangeRate (g, me, STUDENT_BQN, STUDENT_MJ);
         int costEng = getExchangeRate (g, me, STUDENT_BPS, STUDENT_MJ);
         int costJob = \
@@ -24,23 +29,30 @@ action decideAction (Game g) {
         int costTv = getExchangeRate (g, me, STUDENT_MTV, STUDENT_BPS);
         int costMon = \
             getExchangeRate (g, me, STUDENT_MMONEY, STUDENT_BPS);
-        //possible actions depending on resources
+            
+        //Possible actions to do:
+        //Spinoffs -> 1 MJ + 1 MTV + 1 MMNY
+        //Build ARCs -> 1 BPS + 1 BQN
         action nextAction;
         if (tvStar > costTv || jobOwner > costJobs \
             || moneyMaker > costMon || scientist >= costSci \
             || engineer >= costEng) {
-            //retrain students so can start spin off
+            // > to keep some MMONEY and MJOBS and MTVs,
+            // to use for future spinoffs
+            // >= to get rid of all BPS and BQNs
+            
             nextAction.actionCode = RETRAIN_STUDENTS;
             //determine which student to retrain to
             if (jobOwner <= tvStar && jobOwner <= moneyMaker) {
                 nextAction.disciplineTo = STUDENT_MJ;
-            } else if (tvStar <= jobOwner tvStar <= moneyMaker) {
+            } else if (tvStar <= jobOwner && tvStar <= moneyMaker) {
                 nextAction.disciplineTo = STUDENT_MTV;
             } else {
                 nextAction.disciplineTo STUDENT_MMONEY;
             }
-            //find out which student to retrain from
-            /*order is 
+            
+            //Find out which student to retrain from
+            /*Order is 
               MJ -> MTV -> MMONEY -> BQN -> BPS
               this ensures that BQN/BPS are retrained first*/ 
             if (jobOwner > costJobs) {
@@ -54,6 +66,7 @@ action decideAction (Game g) {
             } else {
                 nextAction.disciplineFrom = STUDENT_BPS;
             }
+            
         } else if ((jobOwner * tvStar * moneyMaker) > 0) {
             //create a spinoff
             nextAction.actionCode = START_SPINOFF;
@@ -61,5 +74,6 @@ action decideAction (Game g) {
             //no resources so end turn
             nextAction.actionCode = PASS;
         }
+        
         return nextAction;
 }
