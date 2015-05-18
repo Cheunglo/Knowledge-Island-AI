@@ -15,7 +15,7 @@ action decideAction (Game g) {
         
         //Number of students resources
         int engineer = getStudents (g, me, STUDENT_BPS);
-        int scientist = getStudents (g, me STUDENT_BQN);
+        int scientist = getStudents (g, me, STUDENT_BQN);
         int jobOwner = getStudents (g, me, STUDENT_MJ);
         int tvStar = getStudents (g, me, STUDENT_MTV);
         int moneyMaker = getStudents (g, me, STUDENT_MMONEY);
@@ -34,7 +34,7 @@ action decideAction (Game g) {
         //Spinoffs -> 1 MJ + 1 MTV + 1 MMNY
         //Build ARCs -> 1 BPS + 1 BQN
         action nextAction;
-        if (tvStar > costTv || jobOwner > costJobs \
+        if (tvStar > costTv || jobOwner > costJob \
             || moneyMaker > costMon || scientist >= costSci \
             || engineer >= costEng) {
             // > to keep some MMONEY and MJOBS and MTVs,
@@ -48,14 +48,14 @@ action decideAction (Game g) {
             } else if (tvStar <= jobOwner && tvStar <= moneyMaker) {
                 nextAction.disciplineTo = STUDENT_MTV;
             } else {
-                nextAction.disciplineTo STUDENT_MMONEY;
+                nextAction.disciplineTo = STUDENT_MMONEY;
             }
             
             //Find out which student to retrain from
             /*Order is 
               MJ -> MTV -> MMONEY -> BQN -> BPS
               this ensures that BQN/BPS are retrained first*/ 
-            if (jobOwner > costJobs) {
+            if (jobOwner > costJob) {
                 nextAction.disciplineFrom = STUDENT_MJ;
             } else if (tvStar > costTv) {
                 nextAction.disciplineFrom = STUDENT_MTV;
