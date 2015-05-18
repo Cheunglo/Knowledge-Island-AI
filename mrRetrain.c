@@ -53,18 +53,18 @@ action decideAction (Game g) {
             
             //Find out which student to retrain from
             /*Order is 
-              MJ -> MTV -> MMONEY -> BQN -> BPS
+              BQN -> BPS -> MTV -> MMONEY -> MJ
               this ensures that BQN/BPS are retrained first*/ 
-            if (jobOwner > costJob) {
-                nextAction.disciplineFrom = STUDENT_MJ;
+            if (scientist >= costSci) {
+                nextAction.disciplineFrom = STUDENT_BQN;
+            } else if (engineer >= costEng) {
+                nextAction.disciplineFrom = STUDENT_BPS;
             } else if (tvStar > costTv) {
                 nextAction.disciplineFrom = STUDENT_MTV;
             } else if (moneyMaker > costMon) {
                 nextAction.disciplineFrom = STUDENT_MMONEY;
-            } else if (scientist >= costSci) {
-                nextAction.disciplineFrom = STUDENT_BQN;
             } else {
-                nextAction.disciplineFrom = STUDENT_BPS;
+                nextAction.disciplineFrom = STUDENT_MJ;
             }
             
         } else if ((jobOwner * tvStar * moneyMaker) > 0) {
